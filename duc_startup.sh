@@ -1,5 +1,5 @@
 #!/bin/sh
-/usr/local/bin/duc index /data  &
+duc index -d /duc/duc.db /data  &
 # Make sure we're not confused by old, incompletely-shutdown httpd
 # context after restarting the container.  httpd won't start correctly
 # if it thinks it is already running.

@@ -18,9 +18,10 @@ RUN apt-get update -qq && \
 	apt-get autoclean
 
 # Install duc
-RUN wget -P /tmp/ https://github.com/digitalman2112/duc/archive/master.zip
-RUN unzip /tmp/master.zip -d /tmp/
-RUN cd /tmp/duc-master/ && \
+RUN mkdir /duc
+RUN wget -P /duc/ https://github.com/digitalman2112/duc/archive/master.zip
+RUN unzip /duc/master.zip -d /duc/
+RUN cd /duc/duc-master/ && \
 	autoreconf --install && \
 	./configure && \
 	make && \
@@ -36,17 +37,18 @@ RUN chmod +x /usr/lib/cgi-bin/duc.cgi
 COPY 000-default.conf /etc/apache2/sites-available/
 RUN a2enmod cgi
 
+#create a starter database so that we can set permissions for cgi access
 RUN mkdir /data
-RUN duc index /data/
-RUN chmod 777 /root/
-RUN chmod 777 /root/.duc.db
+RUN duc index -d /duc/duc.db /data/
+RUN chmod 777 /duc/
+RUN chmod 777 /duc/duc.db
 
 EXPOSE 80
 
-COPY duc_startup.sh /root/
-RUN chmod +x /root/duc_startup.sh
+COPY duc_startup.sh /duc/
+RUN chmod +x /duc/duc_startup.sh
 
 # By default, simply start apache.
 #CMD /usr/sbin/apache2ctl -D FOREGROUND
 
-CMD /root/duc_startup.sh
+CMD /duc/duc_startup.sh
