@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.11
+FROM phusion/baseimage:0.9.15
 MAINTAINER digitalman2112 <ian.cole@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -30,25 +30,21 @@ RUN cd /duc/duc-master/ && \
 	
 
 COPY duc.cgi /usr/lib/cgi-bin/
-
-#RUN { echo "#!/bin/sh" ; echo "/usr/local/bin/duc cgi -d /root/.duc.db"; } >> /usr/lib/cgi-bin/duc.cgi
-RUN chmod +x /usr/lib/cgi-bin/duc.cgi
-
 COPY 000-default.conf /etc/apache2/sites-available/
-RUN a2enmod cgi
+COPY index.html /var/www/html/
+COPY duc_startup.sh /duc/
 
 #create a starter database so that we can set permissions for cgi access
-RUN mkdir /data
-RUN duc index -d /duc/duc.db /data/
-RUN chmod 777 /duc/
-RUN chmod 777 /duc/duc.db
+RUN mkdir /data && \
+	duc index -d /duc/duc.db /data/ && \
+	chmod 777 /duc/ && \
+	chmod 777 /duc/duc.db && \
+	a2enmod cgi && \
+	chmod +x /duc/duc_startup.sh && \
+	chmod +x /usr/lib/cgi-bin/duc.cgi
 
+
+VOLUME ["/data"]	
 EXPOSE 80
-
-COPY duc_startup.sh /duc/
-RUN chmod +x /duc/duc_startup.sh
-
-# By default, simply start apache.
-#CMD /usr/sbin/apache2ctl -D FOREGROUND
 
 CMD /duc/duc_startup.sh
