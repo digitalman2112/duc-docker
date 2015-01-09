@@ -40,6 +40,7 @@ RUN mkdir /data && \
 	chmod 777 /duc/ && \
 	chmod 777 /duc/duc.db && \
 	a2enmod cgi && \
+	a2dismod deflate && \
 	chmod +x /duc/duc_startup.sh && \
 	chmod +x /usr/lib/cgi-bin/duc.cgi
 
