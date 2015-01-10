@@ -2,8 +2,10 @@ FROM phusion/baseimage:0.9.15
 MAINTAINER digitalman2112 <ian.cole@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 
+
 # Set correct environment variables
-ENV HOME /root
+ENV HOME /duc
+
 
 # Use baseimage-docker's init system
 CMD ["/sbin/my_init"]
@@ -47,9 +49,9 @@ COPY duc_startup.sh /duc/
 
 #create a starter database so that we can set permissions for cgi access
 RUN mkdir /data && \
-	duc index -d /duc/duc.db /data/ && \
+	duc index /data/ && \
 	chmod 777 /duc/ && \
-	chmod 777 /duc/duc.db && \
+	chmod 777 /duc/.duc.db && \
 	a2enmod cgi && \
 	a2dismod deflate && \
 	chmod +x /duc/duc_startup.sh && \
