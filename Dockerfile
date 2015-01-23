@@ -57,7 +57,7 @@ RUN mkdir /data && \
 	chmod +x /duc/duc_startup.sh && \
 	chmod +x /usr/lib/cgi-bin/duc.cgi
 
-ENV DUC_CGI_OPTIONS -i -l --maxlevels=5 --pixels=1000
+ENV DUC_CGI_OPTIONS -i -l -t --maxlevels=5 --pixels=1000
 VOLUME ["/data"]	
 EXPOSE 80
 
